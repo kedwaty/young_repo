@@ -1,43 +1,72 @@
-"""
-Checkpoint 1b
+#!/usr/bin/env python
+# coding: utf-8
 
-*First complete the steps in checkpoint1a.pdf
+# """
+# Checkpoint 1b
+# 
+# *First complete the steps in checkpoint1a.pdf
+# 
+# Here you will create a script to preprocess the data given in starbucks.csv. You may want to use
+# a jupyter notebook or python terminal to develop your code and test each function as you go... 
+# you can import this file and its functions directly:
+# 
+#     - jupyter notebook: include the lines `%autoreload 2` and `import preprocess`
+#                         then just call preprocess.remove_percents(df) to test
+#                         
+#     - python terminal: run `from importlib import reload` and `import preprocess`
+#                        each time you modify this file, run `reload(preprocess)`
+# 
+# Once you are finished with this program, you should run `python preprocess.py` from the terminal.
+# This should load the data, perform preprocessing, and save the output to the data folder.
+# 
+# """
+# 
+# 
+ss
+# In[1]:
 
-Here you will create a script to preprocess the data given in starbucks.csv. You may want to use
-a jupyter notebook or python terminal to develop your code and test each function as you go... 
-you can import this file and its functions directly:
 
-    - jupyter notebook: include the lines `%autoreload 2` and `import preprocess`
-                        then just call preprocess.remove_percents(df) to test
-                        
-    - python terminal: run `from importlib import reload` and `import preprocess`
-                       each time you modify this file, run `reload(preprocess)`
+import numpy as np
+import pandas as pd
+import math
+import re
 
-Once you are finished with this program, you should run `python preprocess.py` from the terminal.
-This should load the data, perform preprocessing, and save the output to the data folder.
 
-"""
+# In[2]:
+
 
 def remove_percents(df, col):
+    df[col] = df[col].apply(lambda x: x[0].split('%')[0] if type(x) != float else x)
     return df
 
 def fill_zero_iron(df):
+    df['Iron (% DV)'] = df['Iron (% DV)'].fillna(0)
     return df
-    
+
 def fix_caffeine(df):
+    df['Caffeine (mg)'] = df['Caffeine (mg)'].fillna(0)
+    df['Caffeine (mg)'] = df['Caffeine (mg)'].apply(lambda x: 0 if x == 'Varies' else x)
     return df
 
 def standardize_names(df):
+    df.columns= df.columns.str.lower()
+    df.columns = df.columns.str.replace(r'\(.*\)','')
     return df
 
 def fix_strings(df, col):
+    df[col] = df[col].apply(lambda x: x.lower())
+    regex = re.compile('[^a-zA-Z]')
+    df[col] = df[col].apply(lambda x: regex.sub('', x))
     return df
+
+
+# In[12]:
 
 
 def main():
     
     # first, read in the raw data
-    df = pd.read_csv('../data/starbucks.csv')
+    df = pd.read_csv('data/starbucks.csv')
     
     # the columns below represent percent daily value and are stored as strings with a percent sign, e.g. '0%'
     # complete the remove_percents function to remove the percent symbol and convert the columns to a numeric type
@@ -66,8 +95,18 @@ def main():
     
     # now that the data is all clean, save your output to the `data` folder as 'starbucks_clean.csv'
     # you will use this file in checkpoint 2
-    
-    
+    df.to_csv("data/starbucks_clean.csv")
+
+
+# In[13]:
+
 
 if __name__ == "__main__":
     main()
+
+
+# In[ ]:
+
+
+
+
